@@ -7,7 +7,7 @@
  * Implements a high-end 50/50 split-screen layout mirroring the spec.
  * Uses react-hook-form, zod resolver, and Mantine UI inputs.
  */
-import React, { useState } from "react";
+import React, { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -44,7 +44,7 @@ const LoginSchema = z.object({
 
 type LoginFormValues = z.infer<typeof LoginSchema>;
 
-export default function LoginPage() {
+function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [loading, setLoading] = useState(false);
@@ -88,10 +88,10 @@ export default function LoginPage() {
   };
 
   return (
-    <main className="min-h-screen flex items-center justify-center bg-[#F4F7F5] p-4 md:p-8">
+    <main className="min-h-screen flex items-center justify-center bg-app p-4 md:p-8">
       {/* Central 50/50 Card Panel */}
       <div
-        className="w-full max-w-5xl bg-white border border-slate-100 p-0 flex flex-col md:flex-row overflow-hidden rounded-[12px]"
+        className="w-full max-w-5xl bg-surface border border-border p-0 flex flex-col md:flex-row overflow-hidden rounded-[12px]"
       >
         {/* ── LEFT SECTION: Hero Panel ────────────────────────────────────── */}
         <div className="hidden md:flex md:w-1/2 bg-linear-to-br from-[#1E2522] to-[#39443c] p-12 flex-col justify-between text-white relative">
@@ -168,14 +168,14 @@ export default function LoginPage() {
                 <div className="h-6 w-6 rounded-lg bg-[#7A8F81] flex items-center justify-center text-white font-bold text-sm">
                   U
                 </div>
-                <Text className="font-bold tracking-tight text-[#1E2522]" size="md">
+                <Text className="font-bold tracking-tight text-primary" size="md">
                   undangin<span className="text-[#7A8F81]">.studio</span>
                 </Text>
               </div>
-              <Title order={2} className="text-2xl font-bold tracking-tight text-[#1E2522]">
+              <Title order={2} className="text-2xl font-bold tracking-tight text-primary">
                 Admin Portal Access
               </Title>
-              <Text size="xs" className="text-[#64748B] mt-1">
+              <Text size="xs" className="text-secondary mt-1">
                 Sign in to manage and build digitized event ecosystems.
               </Text>
             </div>
@@ -211,7 +211,7 @@ export default function LoginPage() {
                     styles={{
                       input: {
                         borderRadius: "12px",
-                        border: "1px solid #e2e8f0",
+                        borderColor: "var(--color-border)",
                         transition: "all 0.2s ease",
                       },
                     }}
@@ -234,7 +234,7 @@ export default function LoginPage() {
                     styles={{
                       input: {
                         borderRadius: "12px",
-                        border: "1px solid #e2e8f0",
+                        borderColor: "var(--color-border)",
                         transition: "all 0.2s ease",
                       },
                     }}
@@ -263,7 +263,7 @@ export default function LoginPage() {
 
             {/* OAuth Separator */}
             <div className="my-6">
-              <Divider label="Or" labelPosition="center" className="text-[#64748B]" />
+              <Divider label="Or" labelPosition="center" className="text-secondary" />
             </div>
 
             {/* OAuth Integration Placeholders */}
@@ -274,7 +274,7 @@ export default function LoginPage() {
                 leftSection={
                   <span className="text-base font-bold text-red-500">G</span>
                 }
-                className="border-slate-200 text-[#1E2522] hover:bg-slate-50 font-semibold"
+                className="border-border text-primary hover:bg-app font-semibold"
                 styles={{
                   root: { borderRadius: "12px", height: "40px" },
                 }}
@@ -285,9 +285,9 @@ export default function LoginPage() {
                 variant="default"
                 size="sm"
                 leftSection={
-                  <span className="text-base font-bold text-[#1e2522]"></span>
+                  <span className="text-base font-bold text-primary"></span>
                 }
-                className="border-slate-200 text-[#1E2522] hover:bg-slate-50 font-semibold"
+                className="border-border text-primary hover:bg-app font-semibold"
                 styles={{
                   root: { borderRadius: "12px", height: "40px" },
                 }}
@@ -299,5 +299,19 @@ export default function LoginPage() {
         </div>
       </div>
     </main>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense
+      fallback={
+        <main className="min-h-screen flex items-center justify-center bg-app p-4 md:p-8">
+          <Text className="text-secondary animate-pulse font-semibold">Memuat portal...</Text>
+        </main>
+      }
+    >
+      <LoginForm />
+    </Suspense>
   );
 }
